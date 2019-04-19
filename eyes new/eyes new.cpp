@@ -10,34 +10,34 @@
 #include <iostream>
 #include <stdio.h>
 
-#define NOR_H    80  //¥¿³W¤Æ«á¹Ï§Îªº°ª
-#define NOR_W    600   //¥¿³W¤Æ«á¹Ï§Îªº¼e
+#define NOR_H    80  //æ­£è¦åŒ–å¾Œåœ–å½¢çš„é«˜
+#define NOR_W    600   //æ­£è¦åŒ–å¾Œåœ–å½¢çš„å¯¬
 
-#define L_P_X    150    //¥¿³W¤Æ«á¹Ï§Î¥ª²´¨¤X 
-#define L_P_Y    40    //¥¿³W¤Æ«á¹Ï§Î¥ª²´¨¤Y 
+#define L_P_X    150    //æ­£è¦åŒ–å¾Œåœ–å½¢å·¦çœ¼è§’X 
+#define L_P_Y    40    //æ­£è¦åŒ–å¾Œåœ–å½¢å·¦çœ¼è§’Y 
 
-#define R_P_X    450    //¥¿³W¤Æ«á¹Ï§Î¥k²´¨¤X 
-#define R_P_Y    40    //¥¿³W¤Æ«á¹Ï§Î¥k²´¨¤Y 
+#define R_P_X    450    //æ­£è¦åŒ–å¾Œåœ–å½¢å³çœ¼è§’X 
+#define R_P_Y    40    //æ­£è¦åŒ–å¾Œåœ–å½¢å³çœ¼è§’Y 
 
 using namespace std;
 using namespace cv;
 
-/** Global variables */
-string face_cascade_name = "lbpcascade_frontalface.xml";
+/** Global variablesï¼ŒåŒ…å«é¢éƒ¨æ£€æµ‹xmlå’Œçœ¼ç›æ£€æµ‹xml */
+//string face_cascade_name = "lbpcascade_frontalface.xml"; //å¯¼å…¥æ­£ç¡®çš„xmlç»å¯¹è·¯å¾„
 string eyes_cascade_name = "haarcascade_eye_tree_eyeglasses.xml";
-CascadeClassifier face_cascade;
+//CascadeClassifier face_cascade;
 CascadeClassifier eyes_cascade;
-string face_name = "Capture - Face detection";
+//string face_name = "Capture - Face detection";
 string eyes_name = "Capture - Eyes detection";
 
 RNG rng(12345);
 
-CvCapture* capture;//Äá¼v¾÷°Ñ¼Æ
+CvCapture* capture;//æ”å½±æ©Ÿåƒæ•¸
 Mat frame;//main RGB frame
-Mat LeyeROI;//¥ª²´ROI
-Mat ReyeROI;//¥k²´ROI
-Mat LeyeCornerTpl;//¥ª²´²´¨¤TPL
-Mat ReyeCornerTpl;//¥k²´²´¨¤TPL
+Mat LeyeROI;//å·¦çœ¼ROI
+Mat ReyeROI;//å³çœ¼ROI
+Mat LeyeCornerTpl;//å·¦çœ¼çœ¼è§’TPL
+Mat ReyeCornerTpl;//å³çœ¼çœ¼è§’TPL
 
 Mat norImgDraw;
 Mat norLeyeROI;
@@ -45,21 +45,21 @@ Mat norReyeROI;
 Mat norImg;
 Mat norImgTpl;
 
-cv::Rect LeyeRect;//¥ª²´RECT
-cv::Rect ReyeRect;//¥k²´RECT
-cv::Rect LeyeCornerRect;//¥ª²´²´¨¤RECT
-cv::Rect ReyeCornerRect;//¥k²´²´¨¤RECT  
-//RECT´N¬O¾ã±i¼v¹³¤¤ROIªº¦ì§}¸ò¤j¤p ¦ı¤£¦s¦b¼v¹³¸ê°T ¥Î¥H±±¨îROI
+cv::Rect LeyeRect;//å·¦çœ¼RECT
+cv::Rect ReyeRect;//å³çœ¼RECT
+cv::Rect LeyeCornerRect;//å·¦çœ¼çœ¼è§’RECT
+cv::Rect ReyeCornerRect;//å³çœ¼çœ¼è§’RECT  
+//RECTå°±æ˜¯æ•´å¼µå½±åƒä¸­ROIçš„ä½å€è·Ÿå¤§å° ä½†ä¸å­˜åœ¨å½±åƒè³‡è¨Š ç”¨ä»¥æ§åˆ¶ROI
 cv::Rect LeyeBallRect;
 cv::Rect ReyeBallRect; 
 cv::Rect LeyePupilRect;
 cv::Rect ReyePupilRect;
 cv::Rect MainRect;
 cv::Rect norImgRect;
-Point LeyeCorner;//¥ª²´²´¨¤
-Point ReyeCorner;//¥k²´²´¨¤
-Point LeyePupil;//¥ª²´Àû¤Õ
-Point ReyePupil;//¥k²´Àû¤Õ
+Point LeyeCorner;//å·¦çœ¼çœ¼è§’
+Point ReyeCorner;//å³çœ¼çœ¼è§’
+Point LeyePupil;//å·¦çœ¼ç³å­”
+Point ReyePupil;//å³çœ¼ç³å­”
 bool Pupilcheck;
 
 int norImgTplcounter=0;
@@ -69,8 +69,7 @@ double* oimgArr;
 vector<Vec3f> circles;
 Mat norImgc;
 
-double GetPositionGrayValue(double *imagechannel,int ImageW,
-												  int ImageH,int i,int j)
+double GetPositionGrayValue(double *imagechannel,int ImageW,int ImageH,int i,int j)
 {
 	if(i<ImageW && j<ImageH)
 	return (imagechannel[i+j*ImageW]);
@@ -82,36 +81,36 @@ double GetPositionGrayValue(double *imagechannel,int ImageW,
 
 void HistogramEqualiz(double *Imagechanel,int Width,int Height)
 {
-	 int i;
+	int i;
 	long *count;
 	long *EquaTable; //save the Equalization lookup table
 	int *tempMatrix;
-	count=new long [256];//count[i]ªí¥Ügray val=iªº­Ó¼Æ
-	EquaTable=new long [256];//EquaTable[i] ªí¥Ügray val=i®É­n¹ïÀ³¨ìªºval
-	tempMatrix=new int [Width*Height];//¼È¦simage2
+	count=new long [256];//count[i]è¡¨ç¤ºgray val=içš„å€‹æ•¸
+	EquaTable=new long [256];//EquaTable[i] è¡¨ç¤ºgray val=iæ™‚è¦å°æ‡‰åˆ°çš„val
+	tempMatrix=new int [Width*Height];//æš«å­˜image2
 
-	for(i=0;i<256;i++)//ªì©l¤Æ
+	for(i=0;i<256;i++)//åˆå§‹åŒ–
 	{
 		count[i]=0;
 		EquaTable[i]=0;
 	}
 
-	for(i=0;i<Width*Height;i++)//­pºâ¨C¤@gray valªº­Ó¼Æ
+	for(i=0;i<Width*Height;i++)//è¨ˆç®—æ¯ä¸€gray valçš„å€‹æ•¸
 	{
 		count[(int)Imagechanel[i]]++;
 	}
-	for(i=1;i<256;i++)        //²Ö­p
+	for(i=1;i<256;i++)        //ç´¯è¨ˆ
 	{
 		count[i]=count[i-1]+count[i];
 	}
-    //¥H¤W­pºâpdf(²Ö­p)
+    //ä»¥ä¸Šè¨ˆç®—pdf(ç´¯è¨ˆ)
 	for(i=0;i<256;i++)
 	{
 		int temp;
 		temp = count[i];
 		EquaTable[i]=int (255*temp/count[255]);
 	}
-	//result=pdf(²Ö­p)*255
+	//result=pdf(ç´¯è¨ˆ)*255
 	for(i=0;i<Width*Height;i++)
 	{
 		tempMatrix[i]=EquaTable[(int)(Imagechanel[i])];
@@ -136,27 +135,27 @@ void Normal_2Points(double *InImage,int InH,int InW,double lx,double ly,double r
 {
 	// TODO: Add your control notification handler code here
 		
-	    //inwh = ¿é¤J¼v¹³ªº¼e*°ª
+	    //inwh = è¼¸å…¥å½±åƒçš„å¯¬*é«˜
 		int Inwh=InW*InH;
 	    double OriginalDistance;
 		double Dx,Dy;
-		//NormalCenterX = ¸g¹LÂà´««á¨â²´¥­§¡ (X)
+		//NormalCenterX = ç¶“éè½‰æ›å¾Œå…©çœ¼å¹³å‡ (X)
 		double NormalCenterX=(L_P_X+R_P_X)/2;
-		//NormalCenterY = ¸g¹LÂà´««á¨â²´¥­§¡ (Y)
+		//NormalCenterY = ç¶“éè½‰æ›å¾Œå…©çœ¼å¹³å‡ (Y)
 		double NormalCenterY=(L_P_Y+R_P_Y)/2;
-		//OriginalCenterX = ­ì¹Ï¨â²´¤¤¤ß®y¼Ğ (X)
+		//OriginalCenterX = åŸåœ–å…©çœ¼ä¸­å¿ƒåº§æ¨™ (X)
 		double OrigninalCenterX=(lx+rx)/2;
-		//OriginalCenterY = ­ì¹Ï¨â²´¤¤¤ß®y¼Ğ (Y)
+		//OriginalCenterY = åŸåœ–å…©çœ¼ä¸­å¿ƒåº§æ¨™ (Y)
 		double OrigninalCenterY=(ly+ry)/2;
-		//OriginalDistance = ­ì¹Ï¨â²´¶ZÂ÷
+		//OriginalDistance = åŸåœ–å…©çœ¼è·é›¢
 		OriginalDistance=sqrt(pow((lx-rx),2)+pow((ly-ry),2));
-		//S = Âà´««áªº¨â²´(X)®t/­ì¹Ï¨âÂI¶ZÂ÷
+		//S = è½‰æ›å¾Œçš„å…©çœ¼(X)å·®/åŸåœ–å…©é»è·é›¢
 		double S=fabs((double)(L_P_X-R_P_X))/OriginalDistance;
-		//Dx = ­ì¹Ï¨â²´(X)®t
+		//Dx = åŸåœ–å…©çœ¼(X)å·®
 		Dx=(lx-rx);
-		//Dy = ­ì¹Ï¨â²´(Y)®t
+		//Dy = åŸåœ–å…©çœ¼(Y)å·®
 		Dy=(ly-ry);
-		//theda = ¨â²´³s½u»P¤ô¥­ªº§¨¨¤
+		//theda = å…©çœ¼é€£ç·šèˆ‡æ°´å¹³çš„å¤¾è§’
 	   	double theda=atan2(fabs(Dy),fabs(Dx));
 
 		if(Dx<0 && Dy<0)
@@ -248,19 +247,19 @@ void detectStage(Mat frame_gray,
 	std::vector<Rect> eyesTemp;
 	cv::Rect faceRect;
 	
-	face_cascade.detectMultiScale( frame_gray, faces, 1.1, 2, 0, Size(80, 80) );//°»´úÁy
+	face_cascade.detectMultiScale( frame_gray, faces, 1.1, 2, 0, Size(80, 80) );//åµæ¸¬è‡‰
 	if(faces.size()==1&&faces[0].width<frame.cols&&faces[0].height<frame.rows)
 	{
 		for( size_t i = 0; i < (faces.size()==1); i++ )
 		{		
 			faceROI = frame_gray( faces[i] );
-			eyes_cascade.detectMultiScale( faceROI, eyes, 1.1, 2, 0 |CV_HAAR_SCALE_IMAGE, Size(30, 30) );//°»´ú²´·ú
+			eyes_cascade.detectMultiScale( faceROI, eyes, 1.1, 2, 0 |CV_HAAR_SCALE_IMAGE, Size(30, 30) );//åµæ¸¬çœ¼ç›
 			if(eyes.size()==2)
 			{
 				for( size_t j = 0; j < (eyes.size()==2); j++ )
 				{
 					eyesTemp=eyes;
-					if(eyes[j].x>eyes[j+1].x) //³]©w²´·ú¦ì¸meyes[j]=¥ª eyes[j+1]=¥k
+					if(eyes[j].x>eyes[j+1].x) //è¨­å®šçœ¼ç›ä½ç½®eyes[j]=å·¦ eyes[j+1]=å³
 					{
 						eyesTemp[j]=eyes[j];
 						eyes[j]=eyes[j+1];
@@ -268,17 +267,17 @@ void detectStage(Mat frame_gray,
 					}
 					LeyeRect = Rect(eyes[j].x + faces[i].x, eyes[j].y + faces[i].y + eyes[j].height*0.3, eyes[j].width, eyes[j].height*0.6);
 					LeyeROI = frame_gray( LeyeRect );
-					//³]©w²´¨¤¦ì¸m¬°²´·úROIªº1/2¤j¤p¨Ã³]¦b¥kÃä¤¤¶¡
+					//è¨­å®šçœ¼è§’ä½ç½®ç‚ºçœ¼ç›ROIçš„1/2å¤§å°ä¸¦è¨­åœ¨å³é‚Šä¸­é–“
 					LeyeCornerRect = cv::Rect(eyes[j].x + eyes[j].width/2, eyes[j].y + eyes[j].height/4, eyes[j].width/2, eyes[j].height/2) + cv::Point(faces[i].x, faces[i].y);
 					LeyeCornerROI = frame_gray( LeyeCornerRect );
 
 					ReyeRect = Rect(eyes[j+1].x + faces[i].x, eyes[j+1].y + faces[i].y + eyes[j+1].height*0.3, eyes[j+1].width, eyes[j+1].height*0.6);
 					ReyeROI = frame_gray( ReyeRect );
-					//³]©w²´¨¤¦ì¸m¬°²´·úROIªº1/2¤j¤p¨Ã³]¦b¥kÃä¤¤¶¡	
+					//è¨­å®šçœ¼è§’ä½ç½®ç‚ºçœ¼ç›ROIçš„1/2å¤§å°ä¸¦è¨­åœ¨å³é‚Šä¸­é–“	
 					ReyeCornerRect = cv::Rect(eyes[j+1].x, eyes[j+1].y + eyes[j+1].height/4, eyes[j+1].width/2, eyes[j+1].height/2) + cv::Point(faces[i].x, faces[i].y);
 					ReyeCornerROI = frame_gray( ReyeCornerRect );
 					
-					cv::resize(LeyeCornerROI, LeyeCornerTpl, cv::Size(LeyeCornerRect.width, LeyeCornerRect.height), 0, 0);//³]©wTpl®ÚCornerROI¨Ì¼Ë¤j¥H¤ñ¸û
+					cv::resize(LeyeCornerROI, LeyeCornerTpl, cv::Size(LeyeCornerRect.width, LeyeCornerRect.height), 0, 0);//è¨­å®šTplæ ¹CornerROIä¾æ¨£å¤§ä»¥æ¯”è¼ƒ
 					cv::resize(ReyeCornerROI, ReyeCornerTpl, cv::Size(ReyeCornerRect.width, ReyeCornerRect.height), 0, 0);
 					if(abs(LeyeROI.cols-ReyeROI.cols)>=(LeyeROI.cols + ReyeROI.cols)/12||abs(LeyeROI.rows-ReyeROI.rows)>=(LeyeROI.rows + ReyeROI.rows)/12)
 					{
@@ -315,7 +314,7 @@ void trackStage(cv::Mat im, cv::Mat tpl, cv::Rect& rect)
 		rect.x = rect.y = rect.width = rect.height = 0;
 	}
 }
-//µe¥X¤º²´¨¤©M²´·úROI
+//ç•«å‡ºå…§çœ¼è§’å’Œçœ¼ç›ROI
 void drawStage(Mat frame_gray, cv::Rect LeyeRect, cv::Rect ReyeRect, Point LeyeCorner, Point ReyeCorner)
 {
 	rectangle( frame, LeyeRect, CV_RGB(0, 255, 0), 1, 8, 0 );
@@ -449,7 +448,7 @@ void ecExecution()
 		cvtColor( frame, frame_gray, CV_BGR2GRAY );
 		equalizeHist( frame_gray, frame_gray );
 		//Detect faces
-		//­Y¥ª¥k²´ªºRect¤£¦s¦b«hdetection
+		//è‹¥å·¦å³çœ¼çš„Rectä¸å­˜åœ¨å‰‡detection
 		if(LeyeRect.width==0||LeyeRect.height==0||ReyeRect.width==0||ReyeRect.height==0||LeyeCornerRect.width==0||LeyeCornerRect.height==0||ReyeCornerRect.width==0||ReyeCornerRect.height==0)
 			{
 			detectStage(frame_gray,
@@ -466,10 +465,10 @@ void ecExecution()
 				);
 			norImgTplcounter=0;
 		}
-		//­Y¦s¦b«htracking
+		//è‹¥å­˜åœ¨å‰‡tracking
 		else if(LeyeRect.width!=0&&LeyeRect.height!=0&&ReyeRect.width!=0&&ReyeRect.height!=0&&LeyeCornerRect.width!=0&&LeyeCornerRect.height!=0&&ReyeCornerRect.width!=0&&ReyeCornerRect.height!=0)
 		{
-			trackStage(frame_gray, LeyeROI, LeyeRect);//¦b¼v¹³¤¤°lÂÜ²´·úROI
+			trackStage(frame_gray, LeyeROI, LeyeRect);//åœ¨å½±åƒä¸­è¿½è¹¤çœ¼ç›ROI
 			trackStage(frame_gray, ReyeROI, ReyeRect);
 
 			if(LeyeRect.width!=0&&LeyeRect.height!=0&&ReyeRect.width!=0&&ReyeRect.height!=0)
@@ -480,15 +479,15 @@ void ecExecution()
 				LeyeBallRect = LeyeBallRect + cv::Point(LeyeRect.x,LeyeRect.y);
 				ReyeBallRect = ReyeBallRect + cv::Point(ReyeRect.x,ReyeRect.y);
 		
-				LeyeCornerRect.x = LeyeCornerRect.y = ReyeCornerRect.x = ReyeCornerRect.y = 0;//²´¨¤ROI°_©l¥ı³]¬°¹s ¹w¨¾TRACCKING¥X¿ù
+				LeyeCornerRect.x = LeyeCornerRect.y = ReyeCornerRect.x = ReyeCornerRect.y = 0;//çœ¼è§’ROIèµ·å§‹å…ˆè¨­ç‚ºé›¶ é é˜²TRACCKINGå‡ºéŒ¯
 
-				trackStage(frame_gray(Rect(LeyeRect.x + LeyeRect.width/2, LeyeRect.y, LeyeRect.width/2, LeyeRect.height)), LeyeCornerTpl, LeyeCornerRect);//¦b²´·úROI¤¤°lÂÜ²´¨¤ROI
+				trackStage(frame_gray(Rect(LeyeRect.x + LeyeRect.width/2, LeyeRect.y, LeyeRect.width/2, LeyeRect.height)), LeyeCornerTpl, LeyeCornerRect);//åœ¨çœ¼ç›ROIä¸­è¿½è¹¤çœ¼è§’ROI
 				trackStage(frame_gray(Rect(ReyeRect.x, ReyeRect.y, ReyeRect.width/2, ReyeRect.height)), ReyeCornerTpl, ReyeCornerRect);
 
-				LeyeCornerRect = LeyeCornerRect + cv::Point(LeyeRect.x, LeyeRect.y);//¸É¦^²´¨¤ROI°_©l¦ì§}
+				LeyeCornerRect = LeyeCornerRect + cv::Point(LeyeRect.x, LeyeRect.y);//è£œå›çœ¼è§’ROIèµ·å§‹ä½å€
 				ReyeCornerRect = ReyeCornerRect + cv::Point(ReyeRect.x, ReyeRect.y);
 
-				LeyeCorner = cv::Point(LeyeCornerRect.x + LeyeCornerRect.width/2 + LeyeRect.width/2, LeyeCornerRect.y + LeyeCornerRect.height/2);//³]©w²´¨¤ROIªº¥¿¤¤¥¡¬°²´¨¤ÂI
+				LeyeCorner = cv::Point(LeyeCornerRect.x + LeyeCornerRect.width/2 + LeyeRect.width/2, LeyeCornerRect.y + LeyeCornerRect.height/2);//è¨­å®šçœ¼è§’ROIçš„æ­£ä¸­å¤®ç‚ºçœ¼è§’é»
 				ReyeCorner = cv::Point(ReyeCornerRect.x + ReyeCornerRect.width/2, ReyeCornerRect.y + ReyeCornerRect.height/2);
 
 				if((LeyeCornerRect.width!=0||LeyeCornerRect.height!=0)&&(ReyeCornerRect.width!=0||ReyeCornerRect.height!=0))
@@ -519,14 +518,14 @@ void ecExecution()
 					//threshold(norImg, norImg, 19, 255,CV_THRESH_BINARY);
 					detectPupil(norImgc, LeyePupilRect, ReyePupilRect);
 
-					//µe¥X¤º²´¨¤©M²´·úROI
+					//ç•«å‡ºå…§çœ¼è§’å’Œçœ¼ç›ROI
 					drawStage(frame, 
 						LeyeRect, 
 						ReyeRect,
 						LeyeCorner,
 						ReyeCorner
 						);
-					//­Y¨â²´ROI¶¡¶Z¹L¤p(§YROI­«Å|)«h­«³]RECT¬°¹s ¥O¤U¤@±i¹Ï­«·sDETECT
+					//è‹¥å…©çœ¼ROIé–“è·éå°(å³ROIé‡ç–Š)å‰‡é‡è¨­RECTç‚ºé›¶ ä»¤ä¸‹ä¸€å¼µåœ–é‡æ–°DETECT
 					if(abs((LeyeRect.x+LeyeRect.width/2)-(ReyeRect.x+ReyeRect.width/2)) < max(LeyeRect.width, ReyeRect.width))
 					{
 						LeyeRect.x = LeyeRect.y = LeyeRect.width = LeyeRect.height = 0;
@@ -548,14 +547,14 @@ int main( void )
 	if( !eyes_cascade.load( eyes_cascade_name ) ){ printf("--(!)Error loading\n"); return -1; };
 
 	//-- 2. Read the video stream
-	//Äá¼v¾÷Åª¨ú
+	//æ”å½±æ©Ÿè®€å–
 	capture = cvCaptureFromCAM( -1 );
 	while (cv::waitKey(15) != 'q')
 	{
-		//¿é¤JÄá¼v¾÷¼v¹³
+		//è¼¸å…¥æ”å½±æ©Ÿå½±åƒ
 		frame = cvQueryFrame( capture );
 		imgArr=new double[frame.rows*frame.cols];
-		//§PÂ_¬O§_Åª¤J¼v¹³
+		//åˆ¤æ–·æ˜¯å¦è®€å…¥å½±åƒ
 		if(frame.empty())
 		{ 
 			printf(" --(!) No captured frame -- Break!"); 
